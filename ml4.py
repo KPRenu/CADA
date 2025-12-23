@@ -1,39 +1,32 @@
 import numpy as np
 import pandas as pd
-from sklearn import metrics
+from sklearn import metrics, preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 df = pd.read_csv(r"C:\Users\HPR\Desktop\ML Syllabus\Play Tennis.csv")
-df
-len(df)
-df.shape
-df.head()
-df.tail()
-df.describe()
 
-from sklearn import preprocessing
-string_to_int = preprocessing.LabelEncoder()
-df = df.apply(string_to_int.fit_transform)
-df
+le = preprocessing.LabelEncoder()
+df = df.apply(le.fit_transform)
 
 feature_cols = ['Outlook', 'Temprature', 'Humidity', 'Wind']
 X = df[feature_cols]
 y = df.Play_Tennis
 
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=100
+)
 
-from sklearn.tree import DecisionTreeClassifier
 classifier = DecisionTreeClassifier(criterion="gini", random_state=100)
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
 
-from sklearn.metrics import accuracy_score
-print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, y_pred))
 
 data_p = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-data_p
+print(data_p)
 
-from sklearn.metrics import classification_report, confusion_matrix
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
